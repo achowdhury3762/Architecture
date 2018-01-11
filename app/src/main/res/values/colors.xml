@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#009688</color>
-    <color name="colorPrimaryDark">#00796B</color>
+    <!--<color name="colorPrimaryDark">#00796B</color>-->
+    <color name="colorPrimaryDark">#00332d</color>
     <color name="colorAccent">#FFC107</color>
     <color name="colorLightPrimary">#B2DFDB</color>
     <color name="colorWhiteTxtIcons">#FFFFFF</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#757575</color>
-    <color name="colorDivider">#BDBDBD</color>
+    <color name="colorDivider">#e6e6e6</color>
 
     <color name="background">#3f3b3b</color>
     <color name="sapphire">#009688</color>
@@ -15,4 +16,7 @@
     <color name="colorGrey">#2e2e2e</color>
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorGoldenRod">#ffbf00</color>
+
+    <color name="dark_gray">#616161</color>
+
 </resources>
