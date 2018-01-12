@@ -1,8 +1,11 @@
 package com.example.achowdhury.architecture.presentation.authentication;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.achowdhury.architecture.R;
@@ -22,6 +25,7 @@ public class SpotifyAuthenticationActivity extends DaggerAppCompatActivity imple
     private static final String REDIRECTURI = "architecture://callback";
     public static final String SPOTIFY_TOKEN_EXTRA = "architecture.presentation.login";
     public static String spotifyAccessToken = "";
+    private static final int ANIMATION_TIME_MS = 2500;
 
     @Inject
     SpotifyAuthenticationMVP.Presenter presenter;
@@ -32,9 +36,47 @@ public class SpotifyAuthenticationActivity extends DaggerAppCompatActivity imple
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.lobby_activity);
+        setContentView(R.layout.authenticate_activity);
 
         presenter.takeView(this);
+    }
+
+    private void animateImage() {
+        final ImageView logoBrightImageView = (ImageView) findViewById(R.id.logo_bright_image_view);
+        ImageView logoDullImageView = (ImageView) findViewById(R.id.logo_dull_image_view);
+
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                logoBrightImageView.setAlpha((Float) animation.getAnimatedValue());
+            }
+        });
+
+        animator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                continueToLoginActivity();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+        animator.setDuration(ANIMATION_TIME_MS);
+        animator.start();
     }
 
     @Override
@@ -65,9 +107,15 @@ public class SpotifyAuthenticationActivity extends DaggerAppCompatActivity imple
 
     @Override
     public void showAuthSucceeded() {
+        animateImage();
+    }
+
+    public void continueToLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.putExtra(SPOTIFY_TOKEN_EXTRA, spotifyAccessToken);
 
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_from_right, R.anim.slide_out_left);
     }
 
     @Override
