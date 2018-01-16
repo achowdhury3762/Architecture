@@ -1,7 +1,6 @@
 package com.example.achowdhury.architecture.presentation.authentication;
 
 import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +9,7 @@ import android.widget.Toast;
 
 import com.example.achowdhury.architecture.R;
 import com.example.achowdhury.architecture.presentation.login.LoginActivity;
+import com.example.achowdhury.architecture.util.AnimationUtils;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
@@ -42,41 +42,33 @@ public class SpotifyAuthenticationActivity extends DaggerAppCompatActivity imple
     }
 
     private void animateImage() {
-        final ImageView logoBrightImageView = (ImageView) findViewById(R.id.logo_bright_image_view);
+        ImageView logoBrightImageView = (ImageView) findViewById(R.id.logo_bright_image_view);
         ImageView logoDullImageView = (ImageView) findViewById(R.id.logo_dull_image_view);
 
-        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                logoBrightImageView.setAlpha((Float) animation.getAnimatedValue());
-            }
-        });
+        AnimationUtils.animateImageGlow(logoDullImageView, logoBrightImageView, ANIMATION_TIME_MS)
+                .addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
 
-        animator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
+                    }
 
-            }
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        continueToLoginActivity();
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                continueToLoginActivity();
-            }
+                        finish();
+                    }
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
 
-            }
+                    }
 
-            @Override
-            public void onAnimationRepeat(Animator animation) {
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
 
-            }
-        });
-
-        animator.setDuration(ANIMATION_TIME_MS);
-        animator.start();
+                    }
+                });
     }
 
     @Override

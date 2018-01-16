@@ -5,6 +5,8 @@ class LoginMVP {
         void showLoginFailed(LoginFailError error);
 
         void showLoginSucceeded();
+
+        void pushTextBoxUp();
     }
 
     interface Presenter<View> {
@@ -13,5 +15,7 @@ class LoginMVP {
         void dropView();
 
         void checkLogin(String username, String password);
+
+        void clickTextBox();
     }
 }

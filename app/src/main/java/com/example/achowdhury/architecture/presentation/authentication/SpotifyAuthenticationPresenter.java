@@ -34,7 +34,12 @@ final class SpotifyAuthenticationPresenter implements SpotifyAuthenticationMVP.P
         else if(response.getType() == AuthenticationResponse.Type.TOKEN) {
             SpotifyAuthenticationActivity.spotifyAccessToken = response.getAccessToken();
 
-            spotifyAuthView.showAuthSucceeded();
+            if(response.getAccessToken().equals("")) {
+                spotifyAuthView.showAuthFailed("Empty Token");
+            }
+
+            else
+                spotifyAuthView.showAuthSucceeded();
         }
         else {
             spotifyAuthView.showAuthFailed("Login Error, Try Again");

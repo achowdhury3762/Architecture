@@ -11,6 +11,7 @@ public class SpotifyAuthenticationFragment extends Fragment {
 
     @Inject
     public SpotifyAuthenticationFragment() {
+
     }
 
 }
