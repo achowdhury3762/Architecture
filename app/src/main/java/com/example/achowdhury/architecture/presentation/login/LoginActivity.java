@@ -30,7 +30,6 @@ public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.V
 
     @Inject
     LoginPresenter presenter;
-    private float screenHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,22 +40,20 @@ public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.V
         initializeViews();
 
         disposables = new CompositeDisposable();
-        Disposable sub = RxView.clicks(usernameEditText)
-                .subscribe(new Consumer<Object>() {
-                    @Override
-                    public void accept(@NonNull Object o) throws Exception {
-                        presenter.clickTextBox();
-                    }
-                });
+
+        Consumer<Object> consumer = new Consumer<Object>() {
+            @Override
+            public void accept(@NonNull Object o) throws Exception {
+                presenter.clickTextBox();
+            }
+        };
+
+        Disposable sub = RxView.focusChanges(usernameEditText)
+                .subscribe(consumer);
         disposables.add(sub);
 
-        Disposable sub2 = RxView.clicks(passwordEditText)
-                .subscribe(new Consumer<Object>() {
-                    @Override
-                    public void accept(@NonNull Object o) throws Exception {
-                        presenter.clickTextBox();
-                    }
-                });
+        Disposable sub2 = RxView.focusChanges(passwordEditText)
+                .subscribe(consumer);
         disposables.add(sub2);
     }
 
