@@ -5,7 +5,7 @@ import javax.inject.Inject;
 class LoginPresenter implements LoginMVP.Presenter<LoginMVP.View> {
 
     private LoginMVP.View loginView;
-    private boolean editTextFocus;
+    private boolean upAnimationState;
 
     @Inject
     LoginPresenter() {}
@@ -14,7 +14,15 @@ class LoginPresenter implements LoginMVP.Presenter<LoginMVP.View> {
     public void takeView(LoginMVP.View v) {
         loginView = v;
 
-        editTextFocus = true;
+        upAnimationState = false;
+    }
+
+    @Override
+    public void onEditTextFocus(boolean focus) {
+        if(focus && !upAnimationState) {
+            loginView.showKeyboardAnimationUp();
+            upAnimationState = true;
+        }
     }
 
     @Override
@@ -31,9 +39,10 @@ class LoginPresenter implements LoginMVP.Presenter<LoginMVP.View> {
     }
 
     @Override
-    public void clickTextBox() {
-        if(editTextFocus) {
-            loginView.pushTextBoxUp();
+    public void onResume() {
+        if(upAnimationState) {
+            loginView.showKeyboardAnimationDown();
+            upAnimationState = false;
         }
     }
 

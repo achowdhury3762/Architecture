@@ -1,7 +1,11 @@
 package com.example.achowdhury.architecture.presentation.login;
 
+import android.animation.Animator;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.view.KeyEvent;
+import android.view.ViewPropertyAnimator;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -9,7 +13,10 @@ import android.widget.Toast;
 
 import com.example.achowdhury.architecture.R;
 import com.example.achowdhury.architecture.util.AnimationUtils;
+import com.example.achowdhury.architecture.util.picasso.ImageBackgroundLinearLayout;
+import com.example.achowdhury.architecture.util.softkeyboard.KeyboardEditText;
 import com.jakewharton.rxbinding2.view.RxView;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -17,19 +24,23 @@ import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
-public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.View {
+import static com.example.achowdhury.architecture.util.AnimationUtils.animateTranslation;
+
+public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.View, EditTextKeyboardListener  {
     private static final int ANIMATION_DURATION = 300;
     private ImageView logoImageView;
     private LinearLayout inputEditTextLayout;
     private CardView signInButton;
-    private EditText usernameEditText;
-    private EditText passwordEditText;
-    private CompositeDisposable disposables;
+    private KeyboardEditText usernameEditText;
+    private KeyboardEditText passwordEditText;
+    private CompositeDisposable disposables = new CompositeDisposable();
 
     @Inject
-    LoginPresenter presenter;
+    LoginMVP.Presenter presenter;
+
+    @Inject
+    Context appContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,29 +49,40 @@ public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.V
 
         presenter.takeView(this);
         initializeViews();
+        setBackground();
+        keyboardListeners();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        presenter.onResume();
+    }
+
+    private void keyboardListeners() {
         disposables = new CompositeDisposable();
+        Disposable obs = RxView.focusChanges(usernameEditText)
+                .subscribe(this);
+        disposables.add(obs);
 
-        Consumer<Object> consumer = new Consumer<Object>() {
-            @Override
-            public void accept(@NonNull Object o) throws Exception {
-                presenter.clickTextBox();
-            }
-        };
+        Disposable obs2 = RxView.focusChanges(passwordEditText)
+                .subscribe(this);
+        disposables.add(obs2);
 
-        Disposable sub = RxView.focusChanges(usernameEditText)
-                .subscribe(consumer);
-        disposables.add(sub);
+        passwordEditText.setKeyImeChangeListener(this);
+        usernameEditText.setKeyImeChangeListener(this);
+    }
 
-        Disposable sub2 = RxView.focusChanges(passwordEditText)
-                .subscribe(consumer);
-        disposables.add(sub2);
+    private void setBackground() {
+        ImageBackgroundLinearLayout layout = (ImageBackgroundLinearLayout) findViewById(R.id.linear_background_layout);
+        Picasso.with(appContext).load(R.drawable.aux_background).resize(50,50).into(layout);
     }
 
     private void initializeViews() {
         signInButton = (CardView) findViewById(R.id.sign_in_button);
-        usernameEditText = (EditText) findViewById(R.id.username_edit_text);
-        passwordEditText = (EditText) findViewById(R.id.password_edit_text);
+        usernameEditText = (KeyboardEditText) findViewById(R.id.username_edit_text);
+        passwordEditText = (KeyboardEditText) findViewById(R.id.password_edit_text);
         logoImageView = (ImageView) findViewById(R.id.aux_logo_image_view);
         inputEditTextLayout = (LinearLayout) findViewById(R.id.input_text_layout);
     }
@@ -82,23 +104,34 @@ public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.V
     }
 
     @Override
-    public void pushTextBoxUp() {
-        float logoXCoordinate = logoImageView.getLeft();
-        float logoYCoordinate = logoImageView.getTop();
+    public void showKeyboardAnimationUp() {
+        final float deltaY = -1 * (inputEditTextLayout.getTop() - logoImageView.getTop());
 
-        float editTextXCoordinate = inputEditTextLayout.getLeft();
-        float editTextYCoordinate = inputEditTextLayout.getTop();
-
-        float deltaY = -1 * (editTextYCoordinate - logoYCoordinate);
-
-        AnimationUtils.animateTranslation(inputEditTextLayout, 0, deltaY, ANIMATION_DURATION);
+        AnimationUtils.fadeOutImage(logoImageView, ANIMATION_DURATION)
+                .addListener(new AnimationUtils.EndAnimationListener() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        animateTranslation(inputEditTextLayout, 0, deltaY, ANIMATION_DURATION);
+                    }
+                });
     }
 
+    ViewPropertyAnimator animator;
+    
     @Override
-    public void onStop() {
-        super.onStop();
+    public void showKeyboardAnimationDown() {
 
-        disposables.clear();
+        final float deltaY = (inputEditTextLayout.getTop() - logoImageView.getTop());
+
+        animator = AnimationUtils.animateTranslation(inputEditTextLayout, 0, deltaY, ANIMATION_DURATION)
+                .setListener(new AnimationUtils.EndAnimationListener() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        AnimationUtils.fadeInImage(logoImageView, ANIMATION_DURATION);
+                        animator.setListener(null);
+                    }
+                });
+
     }
 
     public void onClickSignInButton() {
@@ -109,5 +142,28 @@ public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.V
         String password = passwordEditText.getText().toString();
 
         presenter.checkLogin(username, password);
+    }
+
+    @Override
+    public void accept(@NonNull Boolean keyboardFocus) throws Exception {
+        presenter.onEditTextFocus(keyboardFocus);
+    }
+
+    @Override
+    public void onKeyIme(int keyCode, KeyEvent event) {
+        if(KeyEvent.KEYCODE_BACK == event.getKeyCode()) {
+            presenter.onResume();
+
+            passwordEditText.clearFocus();
+            usernameEditText.clearFocus();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        presenter.dropView();
+        disposables.clear();
     }
 }

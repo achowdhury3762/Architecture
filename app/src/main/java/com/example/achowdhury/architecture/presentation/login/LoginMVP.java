@@ -6,16 +6,20 @@ class LoginMVP {
 
         void showLoginSucceeded();
 
-        void pushTextBoxUp();
+        void showKeyboardAnimationUp();
+
+        void showKeyboardAnimationDown();
     }
 
     interface Presenter<View> {
         void takeView(View v);
 
-        void dropView();
+        void onEditTextFocus(boolean focus);
 
         void checkLogin(String username, String password);
 
-        void clickTextBox();
+        void onResume();
+
+        void dropView();
     }
 }

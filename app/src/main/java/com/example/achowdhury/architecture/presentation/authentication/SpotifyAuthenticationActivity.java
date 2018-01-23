@@ -10,10 +10,12 @@ import android.widget.Toast;
 import com.example.achowdhury.architecture.R;
 import com.example.achowdhury.architecture.presentation.login.LoginActivity;
 import com.example.achowdhury.architecture.util.AnimationUtils;
+import com.example.achowdhury.architecture.util.picasso.ImageBackgroundRelativeLayout;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.authentication.BuildConfig;
+import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -39,6 +41,13 @@ public class SpotifyAuthenticationActivity extends DaggerAppCompatActivity imple
         setContentView(R.layout.authenticate_activity);
 
         presenter.takeView(this);
+
+        setBackground();
+    }
+
+    private void setBackground() {
+        ImageBackgroundRelativeLayout layout = (ImageBackgroundRelativeLayout) findViewById(R.id.background_layout);
+        Picasso.with(appContext).load(R.drawable.aux_background).resize(50,50).into(layout);
     }
 
     private void animateImage() {
@@ -46,27 +55,12 @@ public class SpotifyAuthenticationActivity extends DaggerAppCompatActivity imple
         ImageView logoDullImageView = (ImageView) findViewById(R.id.logo_dull_image_view);
 
         AnimationUtils.animateImageGlow(logoDullImageView, logoBrightImageView, ANIMATION_TIME_MS)
-                .addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
+                .addListener(new AnimationUtils.EndAnimationListener() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         continueToLoginActivity();
 
                         finish();
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
                     }
                 });
     }
@@ -113,7 +107,5 @@ public class SpotifyAuthenticationActivity extends DaggerAppCompatActivity imple
     @Override
     public void onStop() {
         super.onStop();
-
-        presenter.dropView();
     }
 }

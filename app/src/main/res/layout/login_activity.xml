@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.achowdhury.architecture.util.picasso.ImageBackgroundLinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linear_background_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/aux_background"
     android:orientation="vertical"
     android:gravity="center"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:background="@color/colorPrimary">
 
     <ImageView
         android:id="@+id/aux_logo_image_view"
@@ -56,7 +58,7 @@
                             android:tint="@color/dark_gray"
                             android:src="@drawable/ic_headset_mic_black_24dp"/>
 
-                        <EditText
+                        <com.example.achowdhury.architecture.util.softkeyboard.KeyboardEditText
                             android:id="@+id/username_edit_text"
                             android:maxLines="1"
                             android:textSize="18sp"
@@ -82,7 +84,7 @@
                             android:src="@drawable/ic_lock_black_24dp">
                         </ImageView>
 
-                        <EditText
+                        <com.example.achowdhury.architecture.util.softkeyboard.KeyboardEditText
                             android:paddingBottom="3dp"
                             android:inputType="textPassword"
                             android:id="@+id/password_edit_text"
@@ -109,6 +111,8 @@
         </RelativeLayout>
 
         <android.support.v7.widget.CardView
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             android:id="@+id/sign_in_button"
             app:cardCornerRadius="5dp"
             android:layout_marginTop="12dp"
@@ -138,4 +142,4 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
-</LinearLayout>
+</com.example.achowdhury.architecture.util.picasso.ImageBackgroundLinearLayout>

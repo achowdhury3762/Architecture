@@ -1,5 +1,6 @@
 package com.example.achowdhury.architecture.util;
 
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.os.Build;
 import android.view.View;
@@ -34,4 +35,50 @@ public class AnimationUtils {
         return vpa;
     }
 
+    public static ValueAnimator fadeOutImage(final ImageView view, int duration) {
+        ValueAnimator animator = ValueAnimator.ofFloat(1f, 0f);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                view.setAlpha((Float) animation.getAnimatedValue());
+            }
+        });
+
+        animator.setDuration(duration);
+        animator.start();
+
+        return animator;
+    }
+
+    public static ValueAnimator fadeInImage(final ImageView view, int duration) {
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                view.setAlpha((Float) animation.getAnimatedValue());
+            }
+        });
+
+        animator.setDuration(duration);
+        animator.start();
+
+        return animator;
+    }
+
+    public abstract static class EndAnimationListener implements Animator.AnimatorListener {
+        @Override
+        public void onAnimationStart(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationCancel(Animator animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animator animation) {
+
+        }
+    }
 }
