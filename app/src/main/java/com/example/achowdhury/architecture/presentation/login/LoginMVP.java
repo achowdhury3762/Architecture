@@ -9,6 +9,10 @@ class LoginMVP {
         void showKeyboardAnimationUp();
 
         void showKeyboardAnimationDown();
+
+        void showLoad();
+
+        void hideLoad();
     }
 
     interface Presenter<View> {

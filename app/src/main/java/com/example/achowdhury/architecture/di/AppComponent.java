@@ -18,6 +18,7 @@ import dagger.android.support.DaggerApplication;
 })
 public interface AppComponent extends AndroidInjector<DaggerApplication> {
 
+
     @Component.Builder
     interface Builder {
 

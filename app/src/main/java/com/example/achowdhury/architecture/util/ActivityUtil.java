@@ -3,8 +3,10 @@ package com.example.achowdhury.architecture.util;
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -38,5 +40,8 @@ public class ActivityUtil {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-
+    public static void showDialogFragment(AppCompatActivity activity, DialogFragment fragment) {
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        fragment.show(fragmentManager, "lobby");
+    }
 }

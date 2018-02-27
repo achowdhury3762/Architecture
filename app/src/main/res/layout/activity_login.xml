@@ -112,6 +112,7 @@
 
         <android.support.v7.widget.CardView
             android:clickable="true"
+            android:onClick="onClickSignInButton"
             android:foreground="?android:attr/selectableItemBackground"
             android:id="@+id/sign_in_button"
             app:cardCornerRadius="5dp"

@@ -3,8 +3,8 @@ package com.example.achowdhury.architecture.presentation.login;
 import android.animation.Animator;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -12,8 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.achowdhury.architecture.R;
+import com.example.achowdhury.architecture.util.ActivityUtil;
 import com.example.achowdhury.architecture.util.AnimationUtils;
 import com.example.achowdhury.architecture.util.picasso.ImageBackgroundLinearLayout;
+import com.example.achowdhury.architecture.util.softkeyboard.EditTextKeyboardListener;
 import com.example.achowdhury.architecture.util.softkeyboard.KeyboardEditText;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.squareup.picasso.Picasso;
@@ -27,11 +29,14 @@ import io.reactivex.disposables.Disposable;
 
 import static com.example.achowdhury.architecture.util.AnimationUtils.animateTranslation;
 
-public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.View, EditTextKeyboardListener  {
+//TODO: Music Notes FOR LOADING ANIMATION
+//TODO: Rx for Sign In Button Click
+//TODO: Internet Connectivity Check
+public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.View, EditTextKeyboardListener {
     private static final int ANIMATION_DURATION = 300;
     private ImageView logoImageView;
     private LinearLayout inputEditTextLayout;
-    private CardView signInButton;
+//    private CardView signInButton;
     private KeyboardEditText usernameEditText;
     private KeyboardEditText passwordEditText;
     private CompositeDisposable disposables = new CompositeDisposable();
@@ -45,7 +50,7 @@ public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.V
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_activity);
+        setContentView(R.layout.activity_login);
 
         presenter.takeView(this);
         initializeViews();
@@ -80,7 +85,7 @@ public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.V
     }
 
     private void initializeViews() {
-        signInButton = (CardView) findViewById(R.id.sign_in_button);
+//        signInButton = (CardView) findViewById(R.id.sign_in_button);
         usernameEditText = (KeyboardEditText) findViewById(R.id.username_edit_text);
         passwordEditText = (KeyboardEditText) findViewById(R.id.password_edit_text);
         logoImageView = (ImageView) findViewById(R.id.aux_logo_image_view);
@@ -100,7 +105,7 @@ public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.V
 
     @Override
     public void showLoginSucceeded() {
-
+        ActivityUtil.showToast("login succeeded", appContext);
     }
 
     @Override
@@ -117,7 +122,7 @@ public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.V
     }
 
     ViewPropertyAnimator animator;
-    
+
     @Override
     public void showKeyboardAnimationDown() {
 
@@ -134,7 +139,17 @@ public class LoginActivity extends DaggerAppCompatActivity implements LoginMVP.V
 
     }
 
-    public void onClickSignInButton() {
+    @Override
+    public void showLoad() {
+        ActivityUtil.showToast("Loading", getApplicationContext());
+    }
+
+    @Override
+    public void hideLoad() {
+        ActivityUtil.showToast("Hide Load", getApplicationContext());
+    }
+
+    public void onClickSignInButton(View view) {
         EditText usernameEditText = (EditText) findViewById(R.id.username_edit_text);
         EditText passwordEditText = (EditText) findViewById(R.id.password_edit_text);
 

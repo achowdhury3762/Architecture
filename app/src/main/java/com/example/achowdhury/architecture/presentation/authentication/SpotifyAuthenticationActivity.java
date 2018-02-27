@@ -38,7 +38,7 @@ public class SpotifyAuthenticationActivity extends DaggerAppCompatActivity imple
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.authenticate_activity);
+        setContentView(R.layout.activity_authenticate);
 
         presenter.takeView(this);
 

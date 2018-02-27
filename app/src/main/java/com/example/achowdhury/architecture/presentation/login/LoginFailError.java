@@ -5,5 +5,4 @@ enum LoginFailError {
     INTERNETCONNECTIVITY,
     SHORTUSERNAME,
     SHORTPASSWORD,
-
 }

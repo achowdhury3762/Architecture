@@ -2,10 +2,13 @@ package com.example.achowdhury.architecture.presentation.login;
 
 import javax.inject.Inject;
 
-class LoginPresenter implements LoginMVP.Presenter<LoginMVP.View> {
+class LoginPresenter implements LoginMVP.Presenter<LoginMVP.View>, LoginService.LoginResponseCallback {
 
     private LoginMVP.View loginView;
     private boolean upAnimationState;
+
+    @Inject
+    LoginService loginService;
 
     @Inject
     LoginPresenter() {}
@@ -32,10 +35,21 @@ class LoginPresenter implements LoginMVP.Presenter<LoginMVP.View> {
 
     @Override
     public void checkLogin(String username, String password) {
-        if(password.length() < 3) {
-
+        if(loginView == null) {
+            return;
         }
-        boolean validPassword = checkPasswordValidity(password);
+
+        if(username.length() < 3) {
+            loginView.showLoginFailed(LoginFailError.SHORTUSERNAME);
+            return;
+        } else if(password.length() < 3) {
+            loginView.showLoginFailed(LoginFailError.SHORTPASSWORD);
+            return;
+        }
+
+        loginView.showLoad();
+
+        loginService.login(username, password, this);
     }
 
     @Override
@@ -46,7 +60,15 @@ class LoginPresenter implements LoginMVP.Presenter<LoginMVP.View> {
         }
     }
 
-    private boolean checkPasswordValidity(String password) {
-        return false;
+    @Override
+    public void onLoginSuccess() {
+        loginView.hideLoad();
+        loginView.showLoginSucceeded();
+    }
+
+    @Override
+    public void onLoginFailure() {
+        loginView.hideLoad();
+        loginView.showLoginFailed(LoginFailError.INTERNETCONNECTIVITY);
     }
 }
