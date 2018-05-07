@@ -2,7 +2,8 @@ package com.example.achowdhury.architecture.presentation.authentication;
 
 import android.support.annotation.Nullable;
 
-import com.spotify.sdk.android.authentication.*;
+import com.example.achowdhury.architecture.data.SpotifyUtil;
+import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
 import javax.inject.Inject;
 
@@ -11,8 +12,12 @@ final class SpotifyAuthenticationPresenter implements SpotifyAuthenticationMVP.P
     @Nullable
     private SpotifyAuthenticationMVP.View spotifyAuthView;
 
+    private SpotifyUtil spotifyUtil;
+
     @Inject
-    SpotifyAuthenticationPresenter(){}
+    SpotifyAuthenticationPresenter(){
+        spotifyUtil = SpotifyUtil.getInstance();
+    }
 
     @Override
     public void takeView(SpotifyAuthenticationMVP.View v) {
